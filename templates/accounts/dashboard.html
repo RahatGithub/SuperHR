@@ -1,0 +1,15 @@
+{% extends 'base.html' %}
+{% block title %}Dashboard{% endblock %}
+
+{% block content %}
+  <div class="text-center">
+    <h2>Welcome, {{ user.username }}!</h2>
+    <p>Your role: {{ user.role }}</p>
+    <a href="{% url 'logout' %}" class="btn btn-danger mt-3">Logout</a>
+  </div>
+  <div class="text-center">
+    {% if user.role == 'admin' %}
+      <a href="{% url 'register' %}" class="btn btn-success mb-3">Add New User</a>
+    {% endif %}
+  </div>
+{% endblock %}

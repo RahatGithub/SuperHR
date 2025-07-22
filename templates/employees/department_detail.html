@@ -1,0 +1,16 @@
+{% extends 'base.html' %}
+{% block content %}
+<h2>{{ department.name }}</h2>
+<p>{{ department.description }}</p>
+
+<h3>Employees in this Department</h3>
+<ul>
+  {% for emp in employees %}
+    <li>{{ emp.user.username }} - {{ emp.designation }}</li>
+  {% empty %}
+    <li>No employees found.</li>
+  {% endfor %}
+</ul>
+
+<a href="{% url 'department_list' %}">Back to Departments</a>
+{% endblock %}

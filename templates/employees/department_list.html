@@ -1,0 +1,118 @@
+{% extends 'base.html' %}
+{% block content %}
+<h2>Departments</h2>
+
+{% if request.user.is_superuser %}
+<button class="btn btn-success mb-3" data-bs-toggle="modal" data-bs-target="#addDepartmentModal">
+    Add New
+</button>
+{% endif %}
+
+
+<ul>
+  {% for dept in departments %}
+    <li>
+        <b>{{ dept.name }}</b>
+        <a href="{% url 'department_detail' dept.pk %}" class="btn btn-sm btn-outline-primary">View</a>
+
+        {% if user.is_superuser %}
+        <!-- Edit/Delete Buttons -->
+        <button class="btn btn-sm btn-outline-info" data-bs-toggle="modal" data-bs-target="#editModal{{ dept.pk }}">Edit</button>
+        <button class="btn btn-sm btn-outline-danger" data-bs-toggle="modal" data-bs-target="#deleteModal{{ dept.pk }}">Delete</button>
+        {% endif %}
+    </li>
+
+    <!-- Edit Modal -->
+    <div class="modal fade" id="editModal{{ dept.pk }}" tabindex="-1" aria-labelledby="editModalLabel{{ dept.pk }}" aria-hidden="true">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <form method="POST" action="{% url 'department_edit' dept.pk %}">
+            {% csrf_token %}
+            <div class="modal-header">
+              <h5 class="modal-title" id="editModalLabel{{ dept.pk }}">Edit Department</h5>
+              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+              <div class="mb-3">
+                <label for="name{{ dept.pk }}" class="form-label">Name</label>
+                <input type="text" name="name" class="form-control" id="name{{ dept.pk }}" value="{{ dept.name }}" required>
+              </div>
+              <div class="mb-3">
+                <label for="desc{{ dept.pk }}" class="form-label">Description</label>
+                <textarea name="description" class="form-control" id="desc{{ dept.pk }}" rows="3">{{ dept.description }}</textarea>
+              </div>
+            </div>
+            <div class="modal-footer">
+              <button type="submit" class="btn btn-primary">Save Changes</button>
+              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+
+    <!-- Delete Confirmation Modal -->
+    <div class="modal fade" id="deleteModal{{ dept.pk }}" tabindex="-1" aria-labelledby="deleteModalLabel{{ dept.pk }}" aria-hidden="true">
+      <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+          <form method="POST" action="{% url 'department_delete' dept.pk %}">
+            {% csrf_token %}
+            <div class="modal-header">
+              <h5 class="modal-title" id="deleteModalLabel{{ dept.pk }}">Confirm Delete</h5>
+              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+              Are you sure you want to delete the department <strong>{{ dept.name }}</strong>?
+            </div>
+            <div class="modal-footer">
+              <button type="submit" class="btn btn-danger">Yes, Delete</button>
+              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  {% endfor %}
+</ul>
+
+
+
+
+<!-- Add Department Modal -->
+<div class="modal fade" id="addDepartmentModal" tabindex="-1" aria-labelledby="addDepartmentModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <form method="POST" action="{% url 'department_add' %}">
+        {% csrf_token %}
+        <div class="modal-header">
+          <h5 class="modal-title" id="addDepartmentModalLabel">Add Department</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <div class="mb-3">
+            <label for="id_name" class="form-label">Name</label>
+            <input type="text" name="name" id="id_name" class="form-control" required>
+          </div>
+          <div class="mb-3">
+            <label for="id_description" class="form-label">Description</label>
+            <textarea name="description" id="id_description" class="form-control" rows="3"></textarea>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="submit" class="btn btn-primary">Save</button>
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+{% endblock %}
+
+
+
+
+
+
+
+
